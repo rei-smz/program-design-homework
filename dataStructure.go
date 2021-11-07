@@ -1,8 +1,11 @@
 package main
 
+type VarName string
+type StepId string
+type Answer string
+
 type Expression struct {
-	varName []string
-	other []string
+	item []string
 }
 
 type Listen struct {
@@ -11,17 +14,17 @@ type Listen struct {
 }
 
 type Step struct {
-	stepId string
+	stepId StepId
 	speak Expression
 	listen Listen
-	hashTable map[string]string //{answer: nextStepId}
-	silence string
-	_default string
+	hashTable map[Answer]StepId //{answer: nextStepId}
+	silence StepId
+	_default StepId
 }
 
 type Script struct {
 	stepList map[string]*Step
-	vars map[string]string
+	vars []VarName
 	mainStep *Step
 	exitStep *Step
 }

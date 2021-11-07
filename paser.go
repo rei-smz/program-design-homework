@@ -14,15 +14,15 @@ var script Script
 var newStep *Step
 
 func ProcessDefault(nextStepId string)  {
-	newStep._default = nextStepId
+	newStep._default = StepId(nextStepId)
 }
 
 func ProcessSilence(nextStepId string)  {
-	newStep.silence = nextStepId
+	newStep.silence = StepId(nextStepId)
 }
 
 func ProcessBranch(answer, nextStepId string)  {
-	newStep.hashTable[answer] = nextStepId
+	newStep.hashTable[Answer(answer)] = StepId(nextStepId)
 }
 
 func ProcessListen(start, end string)  {
@@ -34,19 +34,31 @@ func ProcessListen(start, end string)  {
 
 func ProcessStep(stepId string)  {
 	newStep = new(Step)
-	newStep.stepId = stepId
+	newStep.stepId = StepId(stepId)
 	if len(script.stepList) == 0 {
 		script.mainStep = newStep
 	}
 	script.stepList[stepId] = newStep
 }
 
-func ProcessExpression(token []string)  {
-	
+// ProcessExpression 将token转为表达式返回给Speak
+func ProcessExpression(tokens []string) Expression {
+	var ret Expression
+	for _, token := range tokens {
+		if token == "+" {
+			continue
+		}
+		ret.item = append(ret.item, token)
+		if token[0] == '$' {
+			script.vars = append(script.vars, VarName(token))
+		}
+	}
+	return ret
 }
 
+// ProcessSpeak 处理Speak分支
 func ProcessSpeak(token []string)  {
-	ProcessExpression(token)
+	newStep.speak = ProcessExpression(token)
 }
 
 // ProcessTokens 对每一行的token进行处理
