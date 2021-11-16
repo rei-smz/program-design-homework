@@ -28,3 +28,9 @@ type Script struct {
 	mainStep *Step
 	exitStep *Step
 }
+
+type UserControlBlock struct {
+	uid uint64
+	vars map[VarName]string
+	currentStep *Step
+}

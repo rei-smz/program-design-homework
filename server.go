@@ -27,6 +27,17 @@ func Handler(w http.ResponseWriter, r *http.Request)  {
 	query := r.URL.Query()
 
 	//TODO: 请求处理部分
+	switch r.URL.Path {
+	case "/api/check-service": {
+		_, _ = w.Write([]byte("ok"))
+	}
+	case "/api/new-user": {
+		username := query.Get("username")
+		uid, _ := strconv.Atoi(query.Get("uid"))
+		go w.Write(AddUser(uint64(uid), username))
+	}
+		
+	}
 }
 
 // CheckService 检查Web服务是否正常运行
