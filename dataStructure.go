@@ -23,14 +23,13 @@ type Step struct {
 }
 
 type Script struct {
-	stepList map[string]*Step
+	stepList map[StepId]*Step
 	vars []VarName
 	mainStep *Step
 	exitStep *Step
 }
 
 type UserControlBlock struct {
-	uid uint64
 	vars map[VarName]string
 	currentStep *Step
 }

@@ -32,9 +32,9 @@ func ProcessListen(start, end string)  {
 	newStep.listen.endTimer = int64(endTimer)
 }
 
-func ProcessStep(stepId string)  {
+func ProcessStep(stepId StepId)  {
 	newStep = new(Step)
-	newStep.stepId = StepId(stepId)
+	newStep.stepId = stepId
 	if len(script.stepList) == 0 {
 		script.mainStep = newStep
 	}
@@ -65,7 +65,7 @@ func ProcessSpeak(token []string)  {
 func ProcessTokens(tokens []string)  {
 	switch tokens[0] {
 	case "Step": {
-		ProcessStep(tokens[1])
+		ProcessStep(StepId(tokens[1]))
 	}
 	case "Speak": {
 		ProcessSpeak(tokens[1:])

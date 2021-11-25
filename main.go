@@ -9,6 +9,8 @@ var wg sync.WaitGroup
 
 func main() {
 	//初始化
+	port = 7777
+	scriptPath = "script.txt"
 	CreateLog()
 	ParseFile(scriptPath)
 
