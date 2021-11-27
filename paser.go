@@ -35,6 +35,7 @@ func ProcessListen(start, end string)  {
 func ProcessStep(stepId StepId)  {
 	newStep = new(Step)
 	newStep.stepId = stepId
+	newStep.hashTable = make(map[Answer]StepId)
 	if len(script.stepList) == 0 {
 		script.mainStep = newStep
 	}
@@ -66,24 +67,31 @@ func ProcessTokens(tokens []string)  {
 	switch tokens[0] {
 	case "Step": {
 		ProcessStep(StepId(tokens[1]))
+		break
 	}
 	case "Speak": {
 		ProcessSpeak(tokens[1:])
+		break
 	}
 	case "Listen": {
 		ProcessListen(tokens[1], tokens[2])
+		break
 	}
 	case "Branch": {
 		ProcessBranch(tokens[1], tokens[2])
+		break
 	}
 	case "Silence": {
 		ProcessSilence(tokens[1])
+		break
 	}
 	case "Default": {
 		ProcessDefault(tokens[1])
+		break
 	}
 	case "Exit": {
 		script.exitStep = newStep
+		break
 	}
 	default: {
 		Log("脚本文件包含无法识别的Token,退出程序")
@@ -99,7 +107,8 @@ func ParseLine(line []string)  {
 		if token[0] == '#' {
 			break
 		}
-		tokens = append(tokens, token)
+
+		tokens = append(tokens, strings.TrimSpace(token))
 	}
 	ProcessTokens(tokens)
 }
@@ -113,14 +122,8 @@ func ParseFile(fileName string)  {
 		os.Exit(1)
 	}
 
-	defer func(scriptFile *os.File) {
-		err := scriptFile.Close()
-		if err != nil {
-			Log("关闭脚本文件时发生错误")
-		}
-	}(scriptFile)
-
 	buf := bufio.NewReader(scriptFile)
+	script.stepList = make(map[StepId]*Step)
 	for {
 		str, err := buf.ReadString('\n')
 		if err == io.EOF {
@@ -130,10 +133,15 @@ func ParseFile(fileName string)  {
 			os.Exit(1)
 		}
 		if str[0] != '#' {
-			strings.Trim(str, " ")
 			line := strings.Split(str, " ")
 			ParseLine(line)
 		}
 	}
+	defer func(scriptFile *os.File) {
+		err := scriptFile.Close()
+		if err != nil {
+			Log("关闭脚本文件时发生错误")
+		}
+	}(scriptFile)
 	Log("处理脚本文件完成")
 }

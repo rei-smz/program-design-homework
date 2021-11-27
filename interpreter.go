@@ -2,34 +2,12 @@ package main
 
 import (
 	"github.com/gorilla/websocket"
+	"reflect"
 	"strings"
 	"time"
+	"unsafe"
 )
 
-////var users map[uint64]*UserControlBlock
-//
-//func HandleStep(controlBlock *UserControlBlock)  {
-//
-//}
-//
-//// AddUser 处理前端添加用户的请求，返回新增用户的uid
-//func AddUser(uid uint64, name string) {
-//	//newControlBlock := new(UserControlBlock)
-//	//newControlBlock.vars["$name"] = name
-//	//newControlBlock.uid = uid
-//	//newControlBlock.currentStep = script.mainStep
-//	//users[uid] = newControlBlock
-//	//callbackInfo := "{\"uid\":" + strconv.FormatUint(uid, 10)
-//	//go HandleStep(newControlBlock)
-//	//return []byte(callbackInfo)
-//}
-//
-//func HandleMessage(uid uint64, message string) []byte {
-//	if users[uid] == nil {
-//		return []byte("{\"success\":false}")
-//	}
-//
-//}
 
 func HandleSpeak(controlBlock *UserControlBlock) []byte {
 	expression := controlBlock.currentStep.speak
@@ -57,6 +35,10 @@ func HandleListen(conn *websocket.Conn, controlBlock *UserControlBlock) StepId {
 		Log("设置Listen定时器失败")
 		return "error"
 	}
+	connChanger := reflect.Indirect(reflect.ValueOf(conn))
+	rdErr := connChanger.FieldByName("readErr")
+	ptr := unsafe.Pointer(rdErr.UnsafeAddr())
+	*(*error)(ptr) = nil
 	_, message, err = conn.ReadMessage()
 	if err != nil {
 		if strings.Contains(err.Error(), "timeout") {
@@ -66,6 +48,7 @@ func HandleListen(conn *websocket.Conn, controlBlock *UserControlBlock) StepId {
 			return "error"
 		}
 	}
+	Log(string(message))
 	nextStep, ok := controlBlock.currentStep.hashTable[Answer(message)]
 	if ok {
 		return nextStep
