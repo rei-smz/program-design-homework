@@ -1,4 +1,4 @@
-package main
+package sdsl
 
 import (
 	"fmt"
@@ -9,13 +9,14 @@ import (
 var logFile *os.File
 
 // CreateLog 创建日志文件
-func CreateLog() {
+func CreateLog() error {
 	var err error
 	logFile, err = os.Create("log/" + time.Now().Format("20060102_150405") + ".log")
 	if err != nil {
 		fmt.Println("创建日志文件失败，退出程序")
-		os.Exit(1)
+		return err
 	}
+	return nil
 }
 
 // Log 写入日志
