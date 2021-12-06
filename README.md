@@ -292,7 +292,7 @@ VarName 表示脚本中的变量名
 
 ## 使用
 
-编写main.go，下面给出了一个例子。
+1. 编写main.go，下面给出了一个例子。
 
 ```go
 //main.go
@@ -327,4 +327,5 @@ func main() {
 }
 ```
 
-访问localhost:[port]测试程序功能是否正常。如需使用其他支持Websocket的方式，请连接至ws://localhost:[port]/ws来测试。
+2. 将脚本文件`script.txt`放在`main.go`所在的目录。
+3. 访问localhost:[port]测试程序功能是否正常。如需使用其他支持Websocket的方式，请连接至ws://localhost:[port]/ws来测试。
