@@ -122,6 +122,7 @@ func HandleListen(conn *websocket.Conn, controlBlock *UserControlBlock) StepId {
 //HandleMessage 处理前端命令
 func HandleMessage(conn *websocket.Conn, controlBlock *UserControlBlock) {
 	var err error
+	var ok bool
 
 	for {
 		err = conn.WriteMessage(websocket.TextMessage, HandleSpeak(controlBlock))
@@ -136,6 +137,9 @@ func HandleMessage(conn *websocket.Conn, controlBlock *UserControlBlock) {
 		if nextStep == "error" {
 			return
 		}
-		controlBlock.currentStep = script.stepList[nextStep]
+		if controlBlock.currentStep, ok = script.stepList[nextStep]; !ok {
+			Log("脚本文件存在语法错误：未定义的Step")
+			return
+		}
 	}
 }

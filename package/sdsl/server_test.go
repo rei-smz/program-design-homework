@@ -7,7 +7,7 @@ import (
 )
 
 func tickWriter(connect *websocket.Conn, b *testing.B) {
-	messageList := [...]string{"你好", "小笼包", "再见"}
+	messageList := [...]string{"你好", "谢谢", "小笼包", "再见"}
 	for _, message := range messageList {
 		err := connect.WriteMessage(websocket.TextMessage, []byte(message))
 		if nil != err {
